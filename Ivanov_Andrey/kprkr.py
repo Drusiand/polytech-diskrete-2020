@@ -1,11 +1,14 @@
 # Преобразование числа в список
 def num2arr(num):
+    if num == 0:
+        return [0]
     arr = []
     while num != 0:
         arr.append(num % 10)
         num = num // 10
     arr.reverse()
     return arr
+
 
 # Преобразование списка в число
 def arr2num(number_list):
@@ -16,11 +19,14 @@ def arr2num(number_list):
         deg -= 1
     return res
 
+
 # Проверка, является ли данное число Капрекаровым
 def kaprekar(number_list, base):
+    mask = []
+    mask.extend(number_list)
     num = arr2num(number_list)
-    number_list.sort(reverse=True)
-    num1 = number_list
+    mask.sort(reverse=True)
+    num1 = mask
     num2 = []
     num2.extend(num1)
     num2.reverse()
@@ -28,6 +34,7 @@ def kaprekar(number_list, base):
         return 1
     else:
         return 0
+
 
 # Разность с учётом системы счисления (ВАЖНО - num1 по умолчанию меньше num2)
 def base_residual(num1, num2, base):
@@ -47,6 +54,7 @@ def base_residual(num1, num2, base):
     ans = arr2num(ans)
     return ans
 
+
 # Перевод числа из десятичной системы счисления в произвольную
 def dec2base(dec, base):
     if base == 10:
@@ -59,33 +67,47 @@ def dec2base(dec, base):
     num = arr2num(num)
     return num
 
+
+# Преобразование списка в строку
+def arr2str(number_list):
+    number_line = ''
+    for number in number_list:
+        number_line += str(number)
+    return number_line
+
+
 # Погнали
 def run():
     base_list = list(range(2, 11))
-    output_list = []
     for base in base_list:
         print('Система счисления:', base)
         number = 0
-        prev_len = 1  # Чтобы не выводить ноль
-        flag = 0
+        output_list = ['0']
         while True:
             tmp_number = dec2base(number, base)
             number_list = num2arr(tmp_number)
             tmp_len = len(number_list)
-            if tmp_len != prev_len and output_list != []:
-                print('   Количество цифр:', prev_len)
-                print('    ', output_list)
-                output_list = []
+            cur_len = tmp_len
+            flag = 0
+            while cur_len <= 6:
+                if flag == 1:
+                    number_list.reverse()
+                    number_list.append(0)
+                    number_list.reverse()
+                cur_len = len(number_list)
+                if kaprekar(number_list, base) == 1 and tmp_number != 0:
+                    output_list.append(arr2str(number_list))
+                flag = 1
             if tmp_len > 6:
-                if flag == 0:
-                    print('     Числа Капрекара отсутствуют')
                 break
-            if kaprekar(number_list, base) == 1:
-                if prev_len == tmp_len:
-                    output_list.append(tmp_number)
-                    flag = 1
             number += 1
-            prev_len = tmp_len
+        prev_len = 0
+        for unit in output_list:
+            length = len(unit)
+            if prev_len != length:
+                print('    Количество цифр:', prev_len)
+            print('       ',unit)
+            prev_len = length
 
 
 run()
