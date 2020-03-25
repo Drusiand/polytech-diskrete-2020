@@ -105,7 +105,7 @@ def run():
         for unit in output_list:
             length = len(unit)
             if prev_len != length:
-                print('    Количество цифр:', prev_len)
+                print('    Количество цифр:', length)
             print('       ',unit)
             prev_len = length
 
